@@ -23,6 +23,8 @@ app.use(cors({
   origin: function (origin, callback) {
     const allowed = [
       process.env.FRONTEND_URL || 'http://localhost:3000',
+      'https://pleasantryatra.com',
+      'https://www.pleasantryatra.com',
       /^http:\/\/localhost:\d+$/
     ];
     if (!origin || allowed.some(a => typeof a === 'string' ? a === origin : a.test(origin))) {
