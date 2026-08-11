@@ -25,7 +25,9 @@ app.use(cors({
       process.env.FRONTEND_URL || 'http://localhost:3000',
       'https://pleasantryatra.com',
       'https://www.pleasantryatra.com',
-      /^http:\/\/localhost:\d+$/
+      /^http:\/\/localhost:\d+$/,
+      /^https:\/\/pleasantfrontend.*\.up\.railway\.app$/,
+      /^https:\/\/.*\.up\.railway\.app$/
     ];
     if (!origin || allowed.some(a => typeof a === 'string' ? a === origin : a.test(origin))) {
       callback(null, true);
@@ -77,7 +79,14 @@ app.use('/uploads', express.static(path.join(__dirname, '..', 'uploads')));
 
 // Health check
 app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+  const mongoose = require('mongoose');
+  const dbState = mongoose.connection.readyState;
+  const states = { 0: 'disconnected', 1: 'connected', 2: 'connecting', 3: 'disconnecting' };
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    database: states[dbState] || 'unknown'
+  });
 });
 
 // Unknown API routes
